@@ -39,7 +39,7 @@ RenderBoard = function (m) {
             ctx.lineWidth = 1;
             switch (val) {
                 case OPEN:
-                case PATH:
+                        case PATH:
                     ctx.fillStyle = "#ffffff";
                     break;
                 case START:
@@ -47,7 +47,7 @@ RenderBoard = function (m) {
                     break;
                 case TARGET:
                     ctx.fillStyle = "#ff0000";
-                    break;
+                    break;            
                 case BLOCKED:
                     ctx.fillStyle = "#cccccc";
                     break;
@@ -56,11 +56,11 @@ RenderBoard = function (m) {
             }
             ctx.strokeRect(j * cellSize, i * cellSize, cellSize, cellSize);
             ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
-            if (val == PATH) {
+            if (val==PATH){
                 //solution path
                 ctx.lineWidth = 0;
                 ctx.beginPath();
-                ctx.arc(j * cellSize + cellSize / 2, i * cellSize + cellSize / 2, cellSize / 4, 0, 2 * Math.PI);
+                ctx.arc(j * cellSize+cellSize/2, i * cellSize+cellSize/2, cellSize/4, 0, 2 * Math.PI);
                 ctx.fillStyle = "#00ff00";
                 ctx.fill();
                 ctx.stroke();
@@ -73,7 +73,7 @@ RenderBoard = function (m) {
 BoardClick = function (event) {
     //revert canvas
     RenderBoard(board);
-
+    
     //Deep copy problem. A faster way needed..
     var m = JSON.parse(JSON.stringify(board));
 
@@ -83,7 +83,7 @@ BoardClick = function (event) {
     //Map clicked cell
     Destination.x = Math.floor(event.offsetX / cellSize);
     Destination.y = Math.floor(event.offsetY / cellSize);
-
+    
     //Open nodes only
     if (m[Destination.y][Destination.x] != OPEN) {
         return
@@ -100,16 +100,16 @@ BoardClick = function (event) {
 
     //Actual A* run on WASM app
     var solution = Resolve(...arr);
-
+    
     if (!solution.length) return;
     for (let i = 1; i < solution.length; i++) {
         var s = solution[i];
         m[Math.floor(s / size)][s % size] = PATH;
-    }
+    } 
     RenderBoard(m);
 }
 
-InitBoard = function () {
+InitBoard=function(){
     CreateBoard(20);
     RenderBoard(board);
 }
@@ -117,24 +117,5 @@ InitBoard = function () {
 document.addEventListener("DOMContentLoaded", function () {
     var c = document.getElementById('board');
     c.addEventListener('click', BoardClick, false);
-    c.addEventListener("touchstart", function (e) {
-        var t = e.touches[0];
-        var rect = c.getBoundingClientRect();
-        var mouseEvent = new MouseEvent("mousedown", {
-            clientX: t.clientX - rect.left,
-            clientY: t.clientY - rect.top,
-        });
-        canvas.dispatchEvent(mouseEvent);
-    }, false);
-
-    c.addEventListener("touchend", function (e) {
-        var t = e.touches[0];
-        var rect = c.getBoundingClientRect();
-        var mouseEvent = new MouseEvent("mouseup", {
-            clientX: t.clientX - rect.left,
-            clientY: t.clientY - rect.top,
-        });
-        canvas.dispatchEvent(mouseEvent);
-    }, false);
     InitBoard();
 });
