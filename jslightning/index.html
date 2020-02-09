@@ -2,124 +2,15 @@
 <html>
 
 <head>
+    <script src="./vector.js"></script>
+    <script src="./lightning.js"></script>
     <script>
-
-        class Vector {
-            constructor(x, y, x1, y1) {
-                this.X = x;
-                this.Y = y;
-                this.X1 = x1;
-                this.Y1 = y1;
-            }
-
-            dX() {
-                return this.X1 - this.X;
-            }
-            dY() {
-                return this.Y1 - this.Y;
-            }
-            Normalized() {
-                var l = this.Length();
-                return new Vector(this.X, this.Y, this.X + (this.dX() / l), this.Y + (this.dY() / l));
-            }
-
-            Length() {
-                return Math.sqrt(Math.pow(this.dX(), 2) + Math.pow(this.dY(), 2));
-            }
-
-            Multiply(n) {
-                return new Vector(this.X, this.Y, this.X + this.dX() * n, this.Y + this.dY() * n);
-            }
-
-            Clone() {
-                return new Vector(this.x, this.y, this.X1, this.Y1);
-            }
-
-        }
-
-        class Lightning {
-
-            constructor(c) {
-                this.config = c;
-            }
-
-            Cast(context, from, to) {
-                if (!from || !to) {
-                    return;
-                }
-                var v = new Vector(from.X1, from.Y1, to.X1, to.Y1);
-                if (this.config.Threshold && v.Length() > context.canvas.width * this.config.Threshold) {
-                    return;
-                }
-                var vLen = v.Length();
-                var refv = from;
-                var lR = (vLen / context.canvas.width)
-                var segments = Math.floor(this.config.Segments * lR);
-                var l = vLen / segments;
-
-                for (let i = 1; i <= segments; i++) {
-                    var dv = v.Multiply((1 / segments) * i);
-
-                    if (i != segments) {
-                        dv.Y1 += l * Math.random();
-                        dv.X1 += l * Math.random();
-                    }
-                    var r = new Vector(refv.X1, refv.Y1, dv.X1, dv.Y1);
-                    this.Line(context, r, {
-                        Color: this.config.GlowColor,
-                        With: this.config.GlowWidth * lR,
-                        Blur: this.config.GlowBlur * lR,
-                        BlurColor: this.config.GlowColor,
-                      Alpha: this.Random(this.config.GlowAlpha, this.config.GlowAlpha * 2) / 100
-                  
-                    });
-                    this.Line(context, r, {
-                        Color: this.config.Color,
-                        With: this.config.Width,
-                        Blur: this.config.Blur,
-                        BlurColor: this.config.BlurColor,
-                        Alpha: this.config.Alpha
-                    });
-                    refv = r;
-                }
-
-                this.Circle(context, to, lR);
-                this.Circle(context, from, lR);
-
-            }
-
-            Circle(context, p, lR) {
-                context.beginPath();
-                context.arc(p.X1 + Math.random() * 10 * lR, p.Y1 + Math.random() * 10 * lR, 5, 0, 2 * Math.PI, false);
-                context.fillStyle = 'white';
-                context.shadowBlur = 100;
-                context.shadowColor = "#2319FF";
-                context.fill();
-            }
-
-            Line(context, v, c) {
-                context.beginPath();
-                context.strokeStyle = c.Color;
-                context.lineWidth = c.With;
-                context.moveTo(v.X, v.Y);
-                context.lineTo(v.X1, v.Y1);
-                context.globalAlpha = c.Alpha;
-                context.shadowBlur = c.Blur;
-                context.shadowColor = c.BlurColor;
-                context.stroke();
-            }
-
-            Random(min, max) {
-                return Math.floor(Math.random() * (max - min)) + min;
-            }
-
-        }
-
-
         var canvas, target, ctx, lt, draw, points = [];
         document.addEventListener("DOMContentLoaded", function () {
             canvas = document.getElementById("board");
             ctx = canvas.getContext("2d");
+        
+            //canvas events
             canvas.addEventListener("mousedown", e => {
                 draw = true;
                 target = new Vector(0, 0, e.clientX - canvas.offsetLeft + document.documentElement.scrollLeft, e.clientY - canvas.offsetTop + document.documentElement.scrollTop);
@@ -134,14 +25,17 @@
                     target = new Vector(0, 0, e.clientX - canvas.offsetLeft + document.documentElement.scrollLeft, e.clientY - canvas.offsetTop + document.documentElement.scrollTop);
                 }
             });
-            center = new Vector(0, 0, canvas.width / 2, canvas.height / 2);
-            points.push(center);
+
+            //Lighning sources            
+            points.push(new Vector(0, 0, canvas.width / 2, canvas.height / 2));
             points.push(new Vector(0, 0, 20, 20));
             points.push(new Vector(0, 0, canvas.width / 2, 20));
             points.push(new Vector(0, 0, canvas.width - 20, 20));
             points.push(new Vector(0, 0, 20, canvas.height - 20));
             points.push(new Vector(0, 0, canvas.width / 2, canvas.height - 20));
             points.push(new Vector(0, 0, canvas.width - 20, canvas.height - 20));
+
+            //control box events
             var props = document.querySelectorAll("#controlBox input");
             props.forEach(prp => {
                 prp.onblur = buidLighter;
@@ -153,6 +47,7 @@
         function buidLighter() {
             var opt = {};
             var props = document.querySelectorAll("#controlBox input");
+            //Build lighning config
             props.forEach(prp => {
                 var setter = prp.dataset.opt;
                 opt[setter] = prp.value;
@@ -164,10 +59,12 @@
         }
 
         function Animate() {
+            //Clear board
             ctx.shadowBlur = 0;
             ctx.shadowColor = null;
             ctx.fillStyle = 'rgba(0,0,0,0.3)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
             if (draw) {
                 points.forEach(p => {
                     lt.Cast(ctx, p, target);
@@ -182,8 +79,8 @@
 </head>
 
 <body style="background-color: black;color: aliceblue;">
-  
-   
+
+
     <div id="controlBox" style="float: left;">
         <span>Segments:</span><br>
         <input data-opt="Segments" type="range" min="5" max="100" step="1" value="40" />
@@ -218,15 +115,14 @@
         <span>Glow Alpha:</span><br>
         <input data-opt="GlowAlpha" type="range" min="0" max="50" step="1" value="30" />
         <br>
- 
+
     </div>
     <div style="float: left; margin-left: 10px;">
-        <canvas id="board" width="500" height="500" style="border: 1px solid;"
-        ></canvas><br>
+        <canvas id="board" width="500" height="500" style="border: 1px solid;"></canvas><br>
         <span> (click and drag)</span>
     </div>
-    
-        
+
+
 </body>
 
 </html>
