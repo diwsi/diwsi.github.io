@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<script src="./styleslider.js" ></script>
+<head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        th {
+            text-align: left;
+        }
+    </style>
+    <script>
+       
+        document.addEventListener("DOMContentLoaded", function () {
+            StyleSlider.Init();
+        });
+
+    </script>
+</head>
+
+<body style="padding: 50px;" >
+    <table>
+        <tr>
+            <th colspan="2"> Zoom </th>
+        </tr>
+        <tr>
+            <td><input type="range" class="StyleSlider" min="0.5" max="1.2" step="0.1" data-target=".d1"
+                    data-style="zoom:#" /></td>
+            <td class="alert alert-secondary">
+                &lt;input type="range" class="StyleSlider" min="0.5" max="1.2" step="0.1" data-target=".d1"
+                data-style="zoom:#" /&gt;
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div class="d1">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">First</th>
+                                <th scope="col">Last</th>
+                                <th scope="col">Handle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">2</th>
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>@fat</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">3</th>
+                                <td>Larry</td>
+                                <td>the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+        </tr> 
+        <tr>
+            <th colspan="2"> Font Size </th>
+        </tr>
+        <tr>
+            <td><input type="range" class="StyleSlider" min="10" max="20" data-target=".d2"
+                    data-style="font-size:#pt" /></td>
+            <td class="alert alert-secondary">
+                &lt;input type="range" class="StyleSlider" min="10" max="20" data-target=".d2"
+                data-style="font-size:#pt" /&gt;
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div class="d2">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at purus diam. Vestibulum
+                    facilisis, lacus quis
+                    imperdiet pretium, tellus massa sagittis mi, ut elementum felis lectus eget dolor. Curabitur
+                    ultrices dapibus
+                    tempor. Morbi dignissim a ex et condimentum. Suspendisse tristique lacinia dui, eu lacinia nunc.
+                    Donec
+                    ullamcorper sagittis mollis. Duis sit amet accumsan ligula. Quisque pellentesque volutpat accumsan.
+                    <br>
+                    Nulla pretium varius eros, id hendrerit turpis aliquam eu. Praesent gravida in enim id scelerisque.
+                    Nulla
+                    ultricies mi non velit fringilla, nec pellentesque mauris facilisis. Curabitur eu nibh ac purus
+                    tincidunt
+                    elementum et sed ligula. Aliquam erat volutpat. Duis quis ex dictum, viverra arcu ut, vestibulum
+                    felis. Proin
+                    consequat dui felis, quis ullamcorper erat mattis nec. Praesent suscipit fermentum leo, a hendrerit
+                    turpis
+                    pellentesque a. Duis fringilla vitae orci nec sagittis. Aliquam sit amet ipsum elit.
+                </div>
+            </td>
+        </tr> 
+        <tr>
+            <td colspan="2">
+                <tr>
+                    <th colspan="2"> Opacity </th>
+                </tr>
+                <tr>
+                    <td><input type="range" class="StyleSlider" min="0" max="1" step="0.1" data-target="img" value="1"
+                            data-style="opacity:#" /></td>
+                    <td class="alert alert-secondary">
+                        &lt;input type="range" class="StyleSlider" min="0" max="1" step="0.1" data-target="img" value="1"
+                        data-style="opacity:#" /&gt;
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <br>
+                        <img src="https://www.fujifilmusa.com/products/digital_cameras/x/fujifilm_x20/sample_images/img/index/pic_08.jpg"/>
+                    </td>
+                </tr>                
+            </td>
+        </tr>
+
+    </table>
+    <hr>
+</body>
+
+</html>
