@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <title>TÜRKAK</title>
+    <link rel="stylesheet" type="text/css"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+    <script>
+        class Zump {
+            constructor(opt) {
+                //Default config
+                this.opt = {
+                    target: null,
+                    alignTop: false,
+                    delay: 20,
+                    min: 0,
+                    max: 5,
+                    Frames: 50,
+                    focus: true,
+                    loop: false,
+                    style: "margin-left:{v}px"
+                };
+                this.Frame = 0;
+                this.AssignOpt(opt);
+  
+                this.Play();
+            }
+
+            //Start Animation
+            Play = function () {
+                this.el = document.querySelectorAll(this.opt.target);
+                //Copy of original dom
+                this.elB = Object.assign({}, this.el);
+                if (this.opt.focus) {
+                    this.Focus();
+                }
+                this.Animate();
+            }
+
+            //Stop Animation 
+            Stop = function () {
+                this.stopped = true;
+                this.Restore();
+            }
+            
+            ///Merge user configuration with default settings
+            AssignOpt = function ( target) {
+                if (!target) return;
+                for (var key in this.opt) {
+                    if (target[key] != null) {
+                        this.opt[key] = target[key];
+                    }
+                }
+            }
+
+            //Scroll to view
+            Focus = function () {
+                this.el[0].scrollIntoView(this.opt.alignTop);
+            }
+
+
+
+            //Restore dom elemtn to original style state
+            Restore = function () {
+                this.Frame = 0;
+                for (let i = 0; i < this.el.length; i++) {
+                    this.el[i].style = this.elB[i].style;
+                }
+            }
+
+            //Recursive animation 
+            Animate = function () {
+                this.Frame++;
+                setTimeout(() => {
+                    //Stop if limit frame reached or stop command recieved
+                    if ((this.Frame >= this.opt.Frames && !this.opt.loop) || this.stopped) {
+                        if (!this.stopped) {
+                            this.Restore();
+                        } else {
+                            this.stopped = false;
+                        }
+                        return;
+                    }
+                    for (let j = 0; j < this.el.length; j++) {
+                        //calculate rate of change
+                        var pos = this.opt.min + (this.opt.max - this.opt.min) * ((Math.sin(this.Frame) + 1) / 2)
+                        //apply to style
+                        this.el[j].style.cssText = this.opt.style.replace("{v}", pos);
+                    }
+
+                    this.Animate();
+                }, this.opt.delay);
+            }
+        }
+
+
+        var t;
+        function runDemo(opt) {
+            stopDemo();
+            t = new Zump(opt);
+        }
+        function stopDemo() {
+            if (t) {
+                t.Stop();
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="#" class="alert-link">Horizontal Shake</a><br>
+                new Zump({ <br>
+                target:".btn-primary"<br>
+                delay: 20,<br>
+                max:5,<br>
+                min:-5,<br>
+                style:"margin-top:{v}px" <br>
+                });<br>
+                <button onclick="runDemo({
+                    target:'.btn-primary',
+                    delay: 20,
+                    max:5,
+                    min:-5,
+                    style:'margin-top:{v}px'
+                    })"> Click to run </button>
+                <hr />
+                <a href="#" class="alert-link">Vertical Shake</a><br>
+                new Zump({ <br>
+                target:"#inputEmail4"<br>
+                delay: 20,<br>
+                max:10,<br>
+                min:-10,<br>
+                style:"margin-left:{v}px" <br>
+                });<br>
+                <button onclick="runDemo({
+                        target:'#inputEmail4',
+                        delay: 20,
+                        max:10,
+                        min:-10,
+                        style:'margin-left:{v}px'
+                        })"> Click to run </button>
+                <hr />
+
+                <a href="#" class="alert-link">Glow</a><br>
+                new Zump({ <br>
+                target: "#inputZip",<br>
+                delay: 100,<br>
+                max: 10,<br>
+                Frames:25,<br>
+                style: "box-shadow:0px 0px 13px {v}px red"<br>
+                });<br>
+                <button onclick="runDemo({
+                    target: '#inputZip',
+                    delay: 100,
+                    max: 10,
+                    Frames:25,
+                    style: 'box-shadow:0px 0px 13px {v}px red'
+                        })"> Click to run </button>
+                <hr />
+
+
+                <a href="#" class="alert-link">Looping Opacity</a><br>
+                new Zump({ <br>
+                target: ".adresses",<br>
+                delay: 130,<br>
+                max: 1,<br>
+                min:0.5,<br>
+                loop:true,<br>
+                style: "opacity:{v}"<br>
+                });<br>
+                <button onclick="runDemo({
+                    target: '.adresses',
+                    delay: 130,
+                    max: 1,
+                    min:0.5,
+                    loop:true,
+                    style: 'opacity:{v}'
+                        })"> Click to run </button>
+                <button onclick="stopDemo()"> Click to stop </button>
+                <hr />
+
+                <a href="#" class="alert-link">Multiple Elements</a><br>
+                new Zump({ <br>
+                    target: "input",<br>
+                    delay: 100,<br>
+                    max: 5,<br>
+                    min:1,<br>
+                    Frames:25,<br>
+                    style: "border: {v}px solid"<br>
+                });<br>
+                <button onclick="runDemo({
+                    target: 'input',
+                    delay: 100,
+                    max: 5,
+                    min:1,
+                    Frames:25,
+                    style: 'border: {v}px solid'
+                    })"> Click to run </button>
+                <hr />
+            </div>
+            <div class="col">
+                <form>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Email</label>
+                            <input type="email" class="form-control" id="inputEmail4">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">Password</label>
+                            <input type="password" class="form-control" id="inputPassword4">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputAddress">Address</label>
+                        <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                    </div>
+                    <div class="form-group adresses">
+                        <label for="inputAddress2">Address 2</label>
+                        <input type="text" class="form-control" id="inputAddress2"
+                            placeholder="Apartment, studio, or floor">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputCity">City</label>
+                            <input type="text" class="form-control" id="inputCity">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="inputState">State</label>
+                            <select id="inputState" class="form-control">
+                                <option selected>Choose...</option>
+                                <option>...</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="inputZip">Zip</label>
+                            <input type="text" class="form-control" id="inputZip">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="gridCheck">
+                            <label class="form-check-label" for="gridCheck">
+                                Check me out
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign in</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
