@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<head>
+
+<script>
+   function decomp(){
+       var costs=[parseFloat(window.targ.value)];
+       window.comp.innerHTML="";
+        for (let index = 0; index < 30; index++) {
+            var avg=costs.reduce( ( p, c ) => p + c, 0 ) / costs.length;
+            var target=avg*0.95;
+            costs.push(target);
+            window.comp.innerHTML+="<li>"+target.toFixed(2)+" (AV:"+avg.toFixed(2)+")</li>"
+        }
+    }
+</script>
+
+</head>
+<body>
+    <table>
+        <tr>
+            <td><input id="targ"  type="number" step="0.01" /></td>
+            <td><button onclick="decomp()" >Calc</button> </td>
+        </tr>
+    </table>    
+    <ul id="comp" >        
+    </ul>
+</body>
